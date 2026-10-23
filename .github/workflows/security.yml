@@ -1,0 +1,33 @@
+
+name: Security Pipeline
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Bandit
+        run: pip install bandit
+
+      - name: Run SAST
+        run: bandit -r . -ll
+
+      - name: Install pip-audit
+        run: pip install pip-audit
+
+      - name: Run Dependency Scan
+        run: pip-audit
